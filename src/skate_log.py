@@ -1,25 +1,8 @@
 import argparse
 from datetime import date
-import sqlite3
-import os
+from database import Database
 
-db_exists = False
-if os.path.isfile('skatelog.db'):
-    db_exists = True
-
-con = sqlite3.connect('skatelog.db')
-cur = con.cursor()
-
-if not db_exists:
-    cur.execute("CREATE TABLE person(name TEXT, birthdate TEXT)")
-    cur.execute("""CREATE TABLE activity(
-                        person TEXT,
-                        date TEXT,
-                        activity_type TEXT,
-                        skate TEXT,
-                        hours NUMERIC)""")
-    con.commit()
-
+db = Database('skatelog.db')
 
 parser = argparse.ArgumentParser(
                     prog='Skate Log',
@@ -34,23 +17,13 @@ args = parser.parse_args()
 
 d = date.fromisoformat(args.date)
 
-person_exists = False
-for row in cur.execute("SELECT name FROM person"):
-    if row[0] == args.name:
-        person_exists = True
-
-if not person_exists:
-    cur.execute("INSERT INTO person VALUES(?, ?)", (args.name, None))
-
-cur.execute("INSERT INTO activity VALUES(?, ?, ?, ?, ?)",
-            (
-                args.name,
+db.add_person(args.name)
+db.add_activity(args.name,
                 args.date,
                 args.activity_type,
                 args.skate,
-                args.hours))
-con.commit()
+                args.hours)
 
-for row in cur.execute("""SELECT date, activity_type, skate, hours
-                          FROM activity"""):
-    print(f"""{args.name} skated for {row[3]} hours on {row[0]} at {row[1]}""")
+
+for row in db.get_activities_by_person(args.name):
+    print(f"""{args.name} skated for {row[4]} hours on {row[1]} at {row[2]}""")
