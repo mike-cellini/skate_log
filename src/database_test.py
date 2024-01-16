@@ -18,14 +18,14 @@ class DatabaseTests(unittest.TestCase):
 
         person1_count = 0
         for person in db.get_persons():
-            if person[0] == person1:
+            if person.name == person1:
                 person1_count += 1
         self.assertEqual(person1_count, 1)
 
         db.add_person(person1)
         person1_count = 0
         for person in db.get_persons():
-            if person[0] == person1:
+            if person.name == person1:
                 person1_count += 1
         self.assertEqual(person1_count, 1)
         os.remove(name)

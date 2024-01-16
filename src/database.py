@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from activity import Activity
+from person import Person
 
 
 class Database:
@@ -37,7 +38,13 @@ class Database:
 
     def get_persons(self):
         cur = self.__con.cursor()
-        return cur.execute("SELECT name, birthdate FROM person")
+        rows = cur.execute("SELECT name, birthdate FROM person")
+
+        persons = []
+        for row in rows:
+            persons.append(Person(row[0], row[1]))
+
+        return persons
 
     def add_activity(self, name, date, activity_type, skate, hours):
         cur = self.__con.cursor()
