@@ -36,6 +36,14 @@ class Database:
         if not person_exists:
             cur.execute("INSERT INTO person VALUES(?, ?)", (name, birthdate))
 
+    def update_person(self, name, birthdate):
+        cur = self.__con.cursor()
+        cur.execute("""UPDATE person
+                       SET birthdate = ?
+                       WHERE name = ?""",
+                    (birthdate, name))
+        self.__con.commit()
+
     def get_persons(self):
         cur = self.__con.cursor()
         rows = cur.execute("SELECT name, birthdate FROM person")
@@ -45,6 +53,15 @@ class Database:
             persons.append(Person(row[0], row[1]))
 
         return persons
+
+    def get_person(self, name):
+        cur = self.__con.cursor()
+        rows = cur.execute("SELECT name, birthdate FROM person WHERE name = ?",
+                           (name,))
+        row = rows.fetchone()
+        if row is None:
+            return None
+        return Person(row[0], row[1])
 
     def add_activity(self, name, date, activity_type, skate, hours):
         cur = self.__con.cursor()

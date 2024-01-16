@@ -4,11 +4,25 @@ from database import Database
 
 
 def manage_person(args):
-    print(f"{args.update}, {args.name}, {args.birthdate}")
+    if args.birthdate is not None:
+        bd = date.fromisoformat(args.birthdate)
+        if bd is None:
+            raise Exception("Must provide a valid birthdate")
+
+        if db.get_person(args.name) is None:
+            db.add_person(args.name, args.birthdate)
+        elif args.update:
+            db.update_person(args.name, args.birthdate)
+
+    if args.list:
+        for person in db.get_persons():
+            print(f"{person.name}\t\t{person.birthdate}")
 
 
 def add_activity(args):
     d = date.fromisoformat(args.date)
+    if d is None:
+        raise Exception("Must provide a valid date")
 
     db.add_person(args.name)
     db.add_activity(args.name,
@@ -37,6 +51,7 @@ parser.set_defaults(func=add_activity)
 subparsers = parser.add_subparsers()
 person_parser = subparsers.add_parser('person')
 person_parser.add_argument('-u', '--update', action='store_true')
+person_parser.add_argument('-l', '--list', action='store_true')
 person_parser.add_argument('-n', '--name')
 person_parser.add_argument('-b', '--birthdate')
 person_parser.set_defaults(func=manage_person)

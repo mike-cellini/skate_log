@@ -14,20 +14,31 @@ class DatabaseTests(unittest.TestCase):
         name = 'test.db'
         db = Database(name)
         person1 = "Person 1"
+        person2 = "Person 2"
+        person2_birthdate = "2024-01-01"
         db.add_person(person1)
+        db.add_person(person2, person2_birthdate)
 
-        person1_count = 0
+        # Verify all persons were added
+        person_count = 0
         for person in db.get_persons():
-            if person.name == person1:
-                person1_count += 1
-        self.assertEqual(person1_count, 1)
+            person_count += 1
+        self.assertEqual(person_count, 2)
 
+        person1_retrieved = db.get_person(person1)
+        person2_retreived = db.get_person(person2)
+
+        self.assertEqual(person1_retrieved.name, person1)
+        self.assertEqual(person1_retrieved.birthdate, None)
+        self.assertEqual(person2_retreived.name, person2)
+        self.assertEqual(person2_retreived.birthdate, person2_birthdate)
+
+        # Verify we can't duplicate a name
         db.add_person(person1)
-        person1_count = 0
+        person_count = 0
         for person in db.get_persons():
-            if person.name == person1:
-                person1_count += 1
-        self.assertEqual(person1_count, 1)
+            person_count += 1
+        self.assertEqual(person_count, 2)
         os.remove(name)
 
     def test_add_activity(self):
