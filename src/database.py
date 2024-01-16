@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from activity import Activity
 
 
 class Database:
@@ -46,6 +47,11 @@ class Database:
 
     def get_activities_by_person(self, name):
         cur = self.__con.cursor()
-        return cur.execute("""SELECT person, date, activity_type, skate, hours
+        rows = cur.execute("""SELECT person, date, activity_type, skate, hours
                               FROM activity
                               WHERE person = ?""", (name,))
+        activities = []
+        for row in rows:
+            activities.append(Activity(row[0], row[1], row[2], row[3], row[4]))
+
+        return activities

@@ -37,8 +37,8 @@ class DatabaseTests(unittest.TestCase):
         db.add_activity('Person 1', '2023-01-05', 'Test Skate', 'Rent', '0.4')
         db.add_activity('Person 2', '2023-01-05', 'Test Skate', 'Rent', '0.4')
 
-        person1_activities = db.get_activities_by_person('Person 1').fetchall()
-        person2_activities = db.get_activities_by_person('Person 2').fetchall()
+        person1_activities = db.get_activities_by_person('Person 1')
+        person2_activities = db.get_activities_by_person('Person 2')
         self.assertEqual(len(person1_activities), 2)
         self.assertEqual(len(person2_activities), 1)
         os.remove(name)

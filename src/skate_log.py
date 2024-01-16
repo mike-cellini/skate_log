@@ -25,5 +25,5 @@ db.add_activity(args.name,
                 args.hours)
 
 
-for row in db.get_activities_by_person(args.name):
-    print(f"""{args.name} skated for {row[4]} hours on {row[1]} at {row[2]}""")
+for a in db.get_activities_by_person(args.name):
+    print(f"""{args.name} skated for {a.hours} hours on {a.date} at {a.activity_type}""")
